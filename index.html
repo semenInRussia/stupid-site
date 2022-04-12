@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Очень Глупый Сайт</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="text">
+    <label for="user-input">Введите ваш текст, пожалуйста:</label>
+    <input type="text" oninput="changeOutput()" id="user-input" class="text-input">
+</div>
+<br>
+<div class="key">
+    <label for="key">Ваш пароль, пожалуйста:</label>
+    <input oninput="changeOutput()" value="0" type="number" id="key" class="text-input">
+</div>
+<button class="super-button" onclick="saveUserText()">
+    Сохранить Ваш Текст!
+</button>
+<hr>
+<strong>Результат:</strong>
+<p id="output"></p>
+
+<br>
+<div id="saved-messages"></div>
+<script src="main.js"></script>
+</body>
+</html>
