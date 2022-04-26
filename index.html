@@ -6,18 +6,22 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div>
+    <label for="cipher-select">
+        Выберите какой-то шифр, пожуйлуйста:
+    </label>
+    <select onchange="changeCipherToSelected()" id="cipher-select"></select>
+</div>
+
 <div class="text">
     <label for="user-input">Введите ваш текст, пожалуйста:</label>
     <input type="text" oninput="changeOutput()" id="user-input" class="text-input">
 </div>
 <br>
-<div class="key">
+<div id="key-main">
     <label for="key">Ваш пароль, пожалуйста:</label>
     <input oninput="changeOutput()" value="0" type="number" id="key" class="text-input">
 </div>
-<button class="super-button" onclick="saveUserText()">
-    Сохранить Ваш Текст!
-</button>
 <hr>
 <strong>Результат:</strong>
 <p id="output"></p>
