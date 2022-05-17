@@ -3,6 +3,20 @@ const outputElement = document.getElementById("output")
 const keyElement = document.getElementById("key")
 const keyMainElement = document.getElementById("key-main")
 const selectElement = document.getElementById("cipher-select")
+const selectModeElement = document.getElementById("mode-select")
+
+const modes = [
+    {
+        name: "Зашифровать",
+        changeOutput: encodeOutput
+    },
+    {
+        name: "Расшифровать",
+        changeOutput: decodeOutput
+    }
+]
+
+let currentMode = modes[0]
 
 const defaultCipherData = {
     keyHTML: (
@@ -17,28 +31,40 @@ const ciphers = [
     {
         name: "The Caesar",
         encode: causerEncode,
+        decode: (txt, key) => (causerEncode(txt, -key)),
         keyHTML: defaultCipherData.keyHTML,
-        input: () => (
+        inputForEncode: () => (
             [parseInt(keyElement.value) || 0]
-        )
+        ),
+        inputForDecode() {
+            return undefined;
+        }
     },
     {
         name: "The Morse",
         encode: morseEncode,
+        decode: morseDecode,
         keyHTML: "",
-        input: () => ([])
+        inputForEncode: () => ([]),
+        inputForDecode() {
+            return undefined;
+        }
     },
     {
         name: "MD5",
         encode: md5,
         keyHTML: "",
-        input: () => ([])
+        inputForEncode: () => ([]),
+        inputForDecode() {
+            return undefined;
+        }
     },
     {
         name: "For Tests",
         encode: (x) => (x),
+        decode: (x) => (x),
         keyHTML: "",
-        input: () => ([])
+        inputForEncode: () => ([])
     }
 ]
 
@@ -68,10 +94,39 @@ function changeSelectHTML() {
         .join("\n")
 }
 
+function changeSelectModeHTML() {
+    selectModeElement.innerHTML = modes
+        .map(cipher => (`<option>${cipher.name}</option>`))
+        .join("\n")
+}
+
+function changeCurrentModeToSelected() {
+    changeCurrentModeByName(selectModeElement.value)
+}
+
+function changeCurrentModeByName(name) {
+    changeCurrentMode(modes.filter(mode => mode.name === name)[0])
+}
+
+function changeCurrentMode(mode) {
+    currentMode = mode
+}
+
 function changeOutput() {
-    const keys = currentCipher.input()
+    currentMode.changeOutput()
+}
+
+function encodeOutput() {
+    const keys = currentCipher.inputForEncode()
     const encode = currentCipher.encode
     outputElement.innerText = encode(inputElement.value, ...keys)
+}
+
+function decodeOutput() {
+    const keys = currentCipher.inputForDecode() || currentCipher.inputForEncode()
+    const decode = currentCipher.decode
+    console.log(decode)
+    outputElement.innerText = decode(inputElement.value, ...keys)
 }
 
 let alphabetString = 'qwertyuiopasdfghjklzxcvbnm1234567890 QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?/;\'[].,!@#$%^&*()_+\\=-|`йцукенгшщзхъфывапролджэячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИИТЬ╔'
@@ -155,14 +210,10 @@ function morseEncode(string) {
     return result.slice(0, -1)
 }
 
-function decodeString(string) {
+function morseDecode(string) {
     let result = ''
 
     string = string.toLowerCase()
-
-    console.log(string)
-
-
 
     let valuesOfSymbols = string.split(' ')
 
@@ -416,3 +467,4 @@ function ConvertToWordArray(string) {
 
 
 changeSelectHTML()
+changeSelectModeHTML()
