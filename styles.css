@@ -1,6 +1,7 @@
 html {
     margin: 20px 100px 100px 80px;
     font-family: Georgia, serif;
+    font-size: 35px;
 }
 
 .super-button {
@@ -18,6 +19,11 @@ html {
     -moz-transition: .5s;
     -o-transition: .5s;
     transition: .5s;
+}
+
+select {
+    border-radius: 30px;
+    font-family: Georgia, serif;
 }
 
 .super-button:hover {

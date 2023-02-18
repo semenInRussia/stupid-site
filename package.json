@@ -1,0 +1,25 @@
+{
+  "name": "stupid-site",
+  "version": "1.0.0",
+  "description": "Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).",
+  "private": true,
+  "scripts": {
+    "ts": "tsc -w .",
+    "wp": "dum webpack || npx webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/semenInRussia/stupid-site.git"
+  },
+  "keywords": [],
+  "author": "semenInRussia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/semenInRussia/stupid-site/issues"
+  },
+  "homepage": "https://github.com/semenInRussia/stupid-site#readme",
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
