@@ -1,3 +1,7 @@
+import * as causer from "./ciphers/causer";
+import { md5 } from "./ciphers/md5";
+import * as morse from "./ciphers/morse";
+
 const inputElement = <HTMLInputElement>document.getElementById("user-input");
 const outputElement = document.getElementById("output");
 const keyElement = <HTMLInputElement>document.getElementById("key");
@@ -45,9 +49,6 @@ id="key" class="text-input">
 </div>`
 };
 
-import * as causer from "./ciphers/causer.js";
-import { md5 } from "./ciphers/md5.js";
-import * as morse from "./ciphers/morse.js";
 
 const ciphers: Cipher[] = [
   {

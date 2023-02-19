@@ -106,7 +106,7 @@ export function md5(string: string): string {
   return WordToHex(a) + WordToHex(b) + WordToHex(c) + WordToHex(d);
 }
 
-function addUnsignedNum(lX, lY) {
+function addUnsignedNum(lX: number, lY: number): number {
   let lX4, lY4, lX8, lY8, lResult;
   lX8 = lX & 0x80000000;
   lY8 = lY & 0x80000000;
@@ -127,47 +127,75 @@ function addUnsignedNum(lX, lY) {
   }
 }
 
-function F(x, y, z) {
+function F(x: number, y: number, z: number): number {
   return (x & y) | (~x & z);
 }
 
-function G(x, y, z) {
+function G(x: number, y: number, z: number): number {
   return (x & z) | (y & ~z);
 }
 
-function H(x, y, z) {
+function H(x: number, y: number, z: number): number {
   return x ^ y ^ z;
 }
 
-function I(x, y, z) {
+function I(x: number, y: number, z: number): number {
   return y ^ (x | ~z);
 }
 
-function FF(a, b, c, d, x, s, ac) {
+function FF(a: number,
+            b: number,
+            c: number,
+            d: number,
+            x: number,
+            s: number,
+            ac: number): number
+{
   a = addUnsignedNum(a, addUnsignedNum(addUnsignedNum(F(b, c, d), x), ac));
   return addUnsignedNum(RotateLeft(a, s), b);
 }
 
-function GG(a, b, c, d, x, s, ac) {
+function GG(a: number,
+            b: number,
+            c: number,
+            d: number,
+            x: number,
+            s: number,
+            ac: number): number
+{
   a = addUnsignedNum(a, addUnsignedNum(addUnsignedNum(G(b, c, d), x), ac));
   return addUnsignedNum(RotateLeft(a, s), b);
 }
 
-function HH(a, b, c, d, x, s, ac) {
+function HH(a: number,
+            b: number,
+            c: number,
+            d: number,
+            x: number,
+            s: number,
+            ac: number): number
+{
   a = addUnsignedNum(a, addUnsignedNum(addUnsignedNum(H(b, c, d), x), ac));
   return addUnsignedNum(RotateLeft(a, s), b);
 }
 
-function II(a, b, c, d, x, s, ac) {
+function II(a: number,
+            b: number,
+            c: number,
+            d: number,
+            x: number,
+            s: number,
+            ac: number): number
+{
   a = addUnsignedNum(a, addUnsignedNum(addUnsignedNum(I(b, c, d), x), ac));
   return addUnsignedNum(RotateLeft(a, s), b);
 }
 
-function RotateLeft(lValue, iShiftBits) {
+function RotateLeft(lValue: number, iShiftBits: number): number {
   return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
 }
 
-function Utf8Encode(string) {
+function Utf8Encode(string: string) {
   let utftext = "";
 
   for (let n = 0; n < string.length; n++) {
@@ -188,7 +216,7 @@ function Utf8Encode(string) {
   return utftext;
 }
 
-function WordToHex(lValue) {
+function WordToHex(lValue: number): string {
   let WordToHexValue = "",
   WordToHexValue_temp = "",
   lByte,
@@ -203,14 +231,14 @@ function WordToHex(lValue) {
   return WordToHexValue;
 }
 
-function ConvertToWordArray(string) {
+function ConvertToWordArray(string: string): number[] {
   let lWordCount;
   const lMessageLength = string.length;
   const lNumberOfWords_temp1 = lMessageLength + 8;
   const lNumberOfWords_temp2 =
     (lNumberOfWords_temp1 - (lNumberOfWords_temp1 % 64)) / 64;
   const lNumberOfWords = (lNumberOfWords_temp2 + 1) * 16;
-  const lWordArray = Array(lNumberOfWords - 1);
+  const lWordArray: number[] = Array(lNumberOfWords - 1);
   let lBytePosition = 0;
   let lByteCount = 0;
   while (lByteCount < lMessageLength) {
