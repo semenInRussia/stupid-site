@@ -4,8 +4,8 @@
   "description": "Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).",
   "private": true,
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --outfile=dist/main.js",
-    "watch": "esbuild src/index.ts --bundle --outfile=dist/main.js --watch"
+    "build": "esbuild src/main.ts --sourcemap --bundle --minify --outfile=index.js",
+    "watch": "esbuild src/main.ts --sourcemap --bundle --minify --outfile=index.js --watch"
   },
   "repository": {
     "type": "git",
