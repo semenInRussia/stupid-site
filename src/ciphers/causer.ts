@@ -3,14 +3,14 @@ let alphabetString =
 let alphabetOfCaesar = alphabetString.split("");
 let alphabetOfCaesarLength = alphabetOfCaesar.length;
 
-export function decode(string: string, shift: number): string {
-  return encode(string, -shift)
+export function decode(string: string, key: number): string {
+  return encode(string, -key)
 }
 
-export function encode(string: string, shift: number): string {
+export function encode(string: string, key: number): string {
   let chars = string.split("")
     .map(char => alphabetOfCaesar.indexOf(char))
-    .map(indexOfChar => indexOfChar + shift)
+    .map(indexOfChar => indexOfChar + key)
     .map(Math.abs)
     .map(indexOfChar => indexOfChar % alphabetOfCaesarLength)
     .map(indexOfChar => alphabetOfCaesar[indexOfChar]);
@@ -18,6 +18,6 @@ export function encode(string: string, shift: number): string {
   return charsToString(chars);
 }
 
-function charsToString(chars: string[]) {
+function charsToString(chars: string[]): string {
   return chars.join("")
 }

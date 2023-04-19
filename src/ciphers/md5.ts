@@ -1,6 +1,14 @@
 export function md5(string: string): string {
   let x = Array();
-  let k, AA, BB, CC, DD, a, b, c, d;
+  let k;
+  let AA;
+  let BB;
+  let CC;
+  let DD;
+  let a;
+  let b;
+  let c;
+  let d;
   let S11 = 7;
   let S12 = 12;
   let S13 = 17;
@@ -107,7 +115,11 @@ export function md5(string: string): string {
 }
 
 function addUnsignedNum(lX: number, lY: number): number {
-  let lX4, lY4, lX8, lY8, lResult;
+  let lX4;
+  let lY4;
+  let lX8;
+  let lY8;
+  let lResult;
   lX8 = lX & 0x80000000;
   lY8 = lY & 0x80000000;
   lX4 = lX & 0x40000000;
@@ -217,13 +229,13 @@ function Utf8Encode(string: string) {
 }
 
 function WordToHex(lValue: number): string {
-  let WordToHexValue = "",
-  WordToHexValue_temp = "",
-  lByte,
-  lCount;
+  let WordToHexValue = "";
+  let WordToHexValue_temp = "";
+  let lByte;
+  let lCount;
   for (lCount = 0; lCount <= 3; lCount++) {
     lByte = (lValue >>> (lCount * 8)) & 255;
-    WordToHexValue_temp = "0" + lByte.toString(16);
+    WordToHexValue_temp = `0${lByte.toString(16)}`;
     WordToHexValue =
       WordToHexValue +
       WordToHexValue_temp.substr(WordToHexValue_temp.length - 2, 2);

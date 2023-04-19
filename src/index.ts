@@ -1,18 +1,19 @@
-import * as causer from "./ciphers/causer";
-import { md5 } from "./ciphers/md5";
-import * as morse from "./ciphers/morse";
+import * as causer from "./ciphers/causer.js";
+import { md5 } from "./ciphers/md5.js";
+import * as morse from "./ciphers/morse.js";
 
 const inputElement = <HTMLInputElement>document.getElementById("user-input");
 const outputElement = document.getElementById("output");
 const keyElement = <HTMLInputElement>document.getElementById("key");
 const keyMainElement = document.getElementById("key-main");
-const selectElement = <HTMLInputElement>document.getElementById(
-  "cipher-select");
-const selectModeElement = <HTMLInputElement>document.getElementById(
-  "mode-select");
+const selectElement =
+  <HTMLInputElement>document.getElementById("cipher-select");
+const selectModeElement =
+  <HTMLInputElement>document.getElementById("mode-select");
 
 interface Mode {
   name: string,
+  // the function that called after every keyboard hit
   changeOutput: () => void,
 }
 
@@ -29,54 +30,71 @@ const modes: Mode[] = [
 
 let currentMode: Mode = modes[0];
 
-interface Cipher {
-  name: string,
-  keyHTML?: string,
-  encode: (s: string, ...any: any[]) => string,
-  inputForEncode?: () => any[] | undefined,
-  decode?: (s: string, ...any: any[]) => string,
-  inputForDecode?: () => any[] | undefined,
+abstract class Cipher<T = undefined> {
+  abstract readonly name: string;
+  readonly keyHTML?: string;
+  readonly canDecode: boolean = false;
+
+  isCanDecode(): this is DecodableCipher {
+    return this.canDecode;
+  }
+
+  encodeString(s: string): string {
+    return this.encodeStringWithKeys(s, this.getKeys());
+  }
+
+  encodeStringWithKeys(_s: string, _keys: T): string {
+    throw new Error("<cipher>.encodeStringWithKeys() isn't implemented")
+  }
+
+  getKeys(): T {
+    throw new Error("<cipher>.encodeStringWithKeys() isn't implemented")
+  }
 }
 
-const defaultCipherData = {
-  keyHTML: `<div class="key">
-<label for="key">Ваш пароль, пожалуйста:</label>
-<input
-oninput="changeOutput()"
-value="0"
-type="number"
-id="key" class="text-input">
-</div>`
-};
+abstract class DecodableCipher<T = undefined> extends Cipher<T> {
+  readonly canDecode = true;
 
-
-const ciphers: Cipher[] = [
-  {
-    name: "The Caesar",
-    encode: causer.encode,
-    decode: causer.decode,
-    keyHTML: defaultCipherData.keyHTML,
-    inputForEncode: () => [parseInt(keyElement?.value) || 0],
-  },
-  {
-    name: "The Morse",
-    encode: morse.encode,
-    decode: morse.decode,
-    keyHTML: "",
-    inputForEncode: () => [],
-    inputForDecode: () => undefined
-  },
-  {
-    name: "MD5",
-    encode: md5,
-    keyHTML: "",
-  },
-  {
-    name: "For Tests",
-    encode: x => x,
-    decode: x => x,
-    keyHTML: "",
+  decodeString(s: string): string {
+    return this.decodeStringWithKeys(s, this.getKeys())
   }
+
+  decodeStringWithKeys(_s: string, _keys: T): string {
+    throw new Error("<cipher>.decodeStringWithKeys() isn't implemented")
+  }
+}
+
+const defaultKeyHTML = `<div class="key">
+<label for="key">Ваш пароль, пожалуйста:</label>
+<input oninput="changeOutput()" value="0" type="number"
+id="key" class="text-input">
+</div>`;
+
+class Caesar extends DecodableCipher<number> {
+  name = "The Caesar";
+  keyHTML = defaultKeyHTML;
+  encodeStringWithKeys = causer.encode;
+  decodeStringWithKeys = causer.decode;
+  getKeys = () => parseInt(keyElement?.value) || 0;
+}
+
+class Morse extends DecodableCipher {
+  name = "The Morse";
+  encodeString = morse.encode;
+  decodeString = morse.decode;
+}
+
+class MD5 extends Cipher {
+  name = "MD5";
+  encodeString = md5;
+}
+
+type AppCipher = Cipher<number> | Cipher;
+
+const ciphers: Array<AppCipher> = [
+  new Caesar(),
+  new Morse(),
+  new MD5(),
 ];
 
 let currentCipher = ciphers[0];
@@ -85,25 +103,24 @@ function changeCipherToSelected() {
   changeCurrentCipherByName(selectElement?.value);
 }
 
-function changeCurrentCipherByName(cipherName: string) {
-  changeCurrentCipher(ciphers
+function changeCurrentCipherByName(cipherName: string): AppCipher {
+  return changeCurrentCipher(ciphers
     .filter(cipher => cipherName === cipher.name)[0]);
 }
 
-function changeCurrentCipher(newCipher: Cipher) {
+function changeCurrentCipher(newCipher: AppCipher): AppCipher {
   currentCipher = newCipher;
   changeKeysHTMLByCipher(newCipher);
   changeOutput();
+  return currentCipher;
 }
 
-function changeKeysHTMLByCipher(cipher: Cipher) {
-  if (keyMainElement !== null) {
-    if (cipher.keyHTML === "") {
-      keyMainElement.innerHTML = ""
-    } else {
-      keyMainElement.innerHTML = cipher.keyHTML || defaultCipherData.keyHTML;
-    }
+function changeKeysHTMLByCipher(cipher: AppCipher): string | undefined {
+  if (!keyMainElement) {
+    return undefined;
   }
+  keyMainElement.innerHTML = cipher.keyHTML || "";
+  return keyMainElement.innerHTML;
 }
 
 function changeSelectHTML() {
@@ -139,29 +156,17 @@ function changeOutput() {
 }
 
 function encodeOutput() {
-  let keys: any[];
-  if (currentCipher.inputForEncode) {
-    keys = currentCipher.inputForEncode() || [];
-  } else {
-    keys = [];
+  if (!outputElement || !inputElement) {
+    return;
   }
-  const encode = currentCipher.encode;
-  if (outputElement !== null && inputElement !== null) {
-    keys = keys || [];
-    outputElement.innerText = encode(inputElement.value, ...keys);
-  }
+
+  const s = inputElement.value;
+  outputElement.innerText = currentCipher.encodeString(s);
 }
 
 function decodeOutput() {
-  if (currentCipher) {
-    const fetchKeys = currentCipher.inputForDecode
-      || currentCipher.inputForEncode
-      || (() => []);
-    let keys: any = fetchKeys();
-    const decode = currentCipher.decode;
-    if (outputElement !== null && decode) {
-      outputElement.innerText = decode(inputElement.value, ...keys);
-    }
+  if (outputElement && currentCipher.isCanDecode()) {
+   outputElement.innerText = currentCipher.decodeString(inputElement.value);
   }
 }
 
